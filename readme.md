@@ -11,3 +11,5 @@ It uses:
 ## Steps to setup the backend
 
 1. Setup Git and GitHub.
+2. Npm setup.
+3. Server setup using Express.js.
