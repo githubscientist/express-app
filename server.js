@@ -5,8 +5,20 @@ const express = require('express');
 const app = express();
 
 // 4. define the routes
-app.get("/", (request, response) => {
-    response.send('hello world!');
+app.get("/todos", (request, response) => {
+    response.send('GET all todos');
+});
+
+app.post("/todos", (request, response) => {
+    response.send('POST todo');
+});
+
+app.put("/todos", (request, response) => {
+    response.send('PUT todo');
+});
+
+app.delete("/todos", (request, response) => {
+    response.send('DELETE todo');
 });
 
 // 3. start the server to listen for requests
