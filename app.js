@@ -1,9 +1,12 @@
-// 1. import express
+// import express
 const express = require('express');
 const todoRouter = require('./routes/todoRouter');
 
-// 2. create express app
+// create express app
 const app = express();
+
+// use a middleware to parse the request body
+app.use(express.json());
 
 app.use("/todos", todoRouter);
 
