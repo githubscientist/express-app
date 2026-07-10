@@ -4,6 +4,7 @@ const todoRouter = require('./routes/todoRouter');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const logger = require('./utils/logger');
+const errorRouter = require('./utils/errorRoute');
 
 // create express app
 const app = express();
@@ -19,5 +20,6 @@ app.use(logger);
 app.use("/todos", todoRouter);
 
 // middleware to send response handling error routes
+app.use(errorRouter);
 
 module.exports = app;
