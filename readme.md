@@ -49,3 +49,11 @@ It uses:
     "description": "Check in and see how she's doing",
     "isDone": false
 }
+
+[ ] custom middleware - logging, error handling
+[ ] deployment to render.com
+[ ] connecting to the React frontend
+[ ] authentication & authorization
+[ ] connecting express with MySQL
+[ ] performing CRUD operations with MySQL
+[ ] Query Building and Filtering
