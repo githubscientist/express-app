@@ -19,7 +19,7 @@ const authController = {
             }
 
             // encrypt the password
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT);
 
             // create a new user object from the user model
             const newUser = new User({
@@ -73,33 +73,26 @@ const authController = {
             // generate a token
             const token = await jwt.sign({
                 userId: existingUser._id
-            }, 'apple');
+            }, JWT_SECRET_KEY);
 
-            response.status(200).json({ message: 'User login is successful!', token });
+            // directly save the token to the frontend
+            // httpOnly cookies
+            response.cookie('token', token, {
+                httpOnly: true,
+                secure: ENVIRONMENT === 'production', // set to true in production
+                sameSite: 'strict', // adjust based on your needs
+                maxAge: 24 * 60 * 60 * 1000 // 1 day
+            });
+
+            response.status(200).json({ message: 'User login is successful!'});
         } catch (e) {
             response.status(500).json({ message: 'Error logging in user', error: e.message });
         }
     },
     me: async (request, response) => {
         try {
-            // get the token from the authorization header
-            const token = request.headers.authorization?.split(' ')[1];
-
-            if (!token) {
-                // send an error response if no token is provided
-                response.status(500).json({ message: 'No token is provided' });   
-            }
-
-            // verify the token
-            const decodedToken = await jwt.verify(token, 'apple');
-
-            // check if the token is a valid token
-            if (!decodedToken) {
-                response.status(500).json({ message: 'Token is invalid' });
-            }
-
-            // extract the userId from the decodedToken or verified token
-            const userId = decodedToken.userId;
+            // extract the userId from the request object
+            const userId = request.userId;
 
             // use the userId to fetch the details of the currently logged in user profile from the db
             const user = await User.findById(userId);
@@ -107,6 +100,20 @@ const authController = {
             response.status(200).json({ message: 'User profile fetched!', data: user });
         } catch (e) {
             response.status(500).json({ message: 'Error fetching user profile', error: e.message });
+        }
+    },
+    logout: async (request, response) => {
+        try {
+            // clear the token cookie
+            response.clearCookie('token', {
+                httpOnly: true,
+                secure: 'development' === 'production', // set to true in production
+                sameSite: 'strict' // adjust based on your needs
+            });
+
+            response.status(200).json({ message: 'User logged out successfully!' });
+        } catch (e) {
+            response.status(500).json({ message: 'Error logging out the user', error: e.message });
         }
     }
 }

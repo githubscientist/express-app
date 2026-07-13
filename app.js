@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const logger = require('./utils/logger');
 const errorRouter = require('./utils/errorRoute');
 const authRouter = require('./routes/authRouter');
+const cookieParser = require('cookie-parser');
 
 // create express app
 const app = express();
@@ -13,6 +14,9 @@ const app = express();
 // use a middleware to parse the request body
 // app.use(express.json());
 app.use(bodyParser.json());
+
+// parse the cookies
+app.use(cookieParser());
 
 // middleware to log all the incoming requests
 // app.use(morgan("dev"));
