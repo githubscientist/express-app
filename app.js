@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const logger = require('./utils/logger');
 const errorRouter = require('./utils/errorRoute');
+const authRouter = require('./routes/authRouter');
 
 // create express app
 const app = express();
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 // app.use(morgan("dev"));
 app.use(logger);
 
+app.use("/auth", authRouter);
 app.use("/todos", todoRouter);
 
 // middleware to send response handling error routes
