@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { JWT_SECRET_KEY, ENVIRONMENT, BCRYPT_SALT } = require('../utils/config');
 
 const authController = {
     register: async (request, response) => {
@@ -19,7 +20,7 @@ const authController = {
             }
 
             // encrypt the password
-            const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT);
+            const hashedPassword = await bcrypt.hash(password, parseInt(BCRYPT_SALT, 10));
 
             // create a new user object from the user model
             const newUser = new User({
@@ -95,7 +96,7 @@ const authController = {
             const userId = request.userId;
 
             // use the userId to fetch the details of the currently logged in user profile from the db
-            const user = await User.findById(userId);
+            const user = await User.findById(userId).select('-password -__v');
 
             response.status(200).json({ message: 'User profile fetched!', data: user });
         } catch (e) {
