@@ -9,7 +9,12 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Todo'
         }
-    ]
+    ],
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema, 'users');

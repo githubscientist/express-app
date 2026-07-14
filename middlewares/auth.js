@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET_KEY } = require('../utils/config');
+const User = require('../models/user');
 
 const auth = {
     isAuthenticated: async (request, response, next) => {
@@ -32,6 +33,28 @@ const auth = {
             next();
         } catch (e) {
             return response.status(500).json({ message: 'User not authenticated!' });
+        }
+    },
+    allowRoles: (roles) => {
+        return async (request, response, next) => {
+            // get the userId from the request object
+            const userId = request.userId;
+
+            // get the user from the database
+            const user = await User.findById(userId);
+
+            // check if the user exists
+            if (!user) {
+                return response.status(500).json({ message: 'User not found!' });
+            }
+
+            // check if the currently logged in user has the required role
+            if (!roles.includes(user.role)) {
+                return response.status(500).json({ message: 'User does not have the required role!' });
+            }
+
+            // call the next middleware
+            next();
         }
     }
 }
